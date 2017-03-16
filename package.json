@@ -1,0 +1,30 @@
+{
+  "name": "gh-identity-registry",
+  "version": "1.0.0",
+  "description": "Simple decentralized registry linking Ethereum addresses with Github usernames",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yondonfu/gh-identity-registry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yondonfu/gh-identity-registry/issues"
+  },
+  "homepage": "https://github.com/yondonfu/gh-identity-registry#readme",
+  "dependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "babel-preset-stage-3": "^6.22.0"
+  }
+}
