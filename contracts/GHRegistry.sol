@@ -14,6 +14,8 @@ contract GHRegistry is usingOraclize {
   uint public oraclizeGas;
   uint public minCollateral;
 
+  address[] public registryEntries;
+
   mapping(address => string) public registry;
   mapping(bytes32 => VerifyUsernameCallback) callbacks;
   mapping(address => uint) collaterals;
@@ -64,6 +66,7 @@ contract GHRegistry is usingOraclize {
 
     if (checkGist(result, c.claimant, c.username)) {
       registry[c.claimant] = c.username;
+      registryEntries.push(c.claimant);
 
       VerifyUsernameComplete(true, c.claimant, c.username);
     } else {
@@ -114,5 +117,15 @@ contract GHRegistry is usingOraclize {
     if (!payee.send(collateral)) {
       collaterals[payee] = collateral;
     }
+  }
+
+  function getRegistrySize() public constant returns (uint) {
+    return registryEntries.length;
+  }
+
+  function getRegistryEntry(uint idx) public constant returns (address, string) {
+    address addr = registryEntries[idx];
+
+    return (addr, registry[addr]);
   }
 }
