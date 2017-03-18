@@ -1,35 +1,46 @@
 import {
   TRANSFER_USERNAME,
   TRANSFER_USERNAME_SUCCESS,
-  TRANSFER_USERNAME_FAILURE
+  TRANSFER_USERNAME_FAILURE,
+  CHANGE_NEW_OWNER,
+  OPEN_DIALOG,
+  CLOSE_DIALOG
 } from '../actions/transferUsername';
 
 const transferUsername = (state = {
   pending: false,
-  username: null,
-  ethAddress: null
+  newOwner: '',
+  openDialog: false
 }, action) => {
   switch (action.type) {
   case TRANSFER_USERNAME:
     return {
-      pending: true,
-      username: action.username,
-      oldOwner: action.oldOwner,
-      newOwner: action.newOwner
+      pending: true
     };
   case TRANSFER_USERNAME_SUCCESS:
     return {
       pending: false,
-      username: null,
-      oldOwner: null,
-      newOwner: null
+      newOwner: ''
     };
   case TRANSFER_USERNAME_FAILURE:
     return {
       pending: false,
-      username: null,
-      oldOwner: null,
-      newOwner: null
+      newOwner: ''
+    };
+  case CHANGE_NEW_OWNER:
+    return {
+      ...state,
+      newOwner: action.newOwner
+    };
+  case OPEN_DIALOG:
+    return {
+      ...state,
+      openDialog: action.openDialog
+    };
+  case CLOSE_DIALOG:
+    return {
+      ...state,
+      openDialog: action.openDialog
     };
   default:
     return state;

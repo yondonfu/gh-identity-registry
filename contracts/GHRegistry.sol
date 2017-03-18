@@ -80,6 +80,7 @@ contract GHRegistry is usingOraclize {
     if (bytes(registry[msg.sender]).length <= 0) throw;
 
     registry[_a] = registry[msg.sender];
+    registryEntries.push(_a);
 
     delete registry[msg.sender];
   }

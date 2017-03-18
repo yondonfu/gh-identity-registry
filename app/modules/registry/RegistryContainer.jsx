@@ -2,33 +2,37 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchRegistry } from './actions/registry';
 
+import Registry from './Registry';
+
 class RegistryContainer extends React.Component {
   componentDidMount() {
     this.props.dispatch(fetchRegistry());
   }
 
   render() {
+    const { pending, lastUpdated, entries } = this.props;
+
     return (
       <div>
-        foo
+        <Registry entries={entries}/>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const registry = state.registry;
+  const { registry } = state;
 
   const {
     pending,
     lastUpdated,
-    items
+    entries
   } = registry;
 
   return {
     pending,
     lastUpdated,
-    items
+    entries
   };
 }
 

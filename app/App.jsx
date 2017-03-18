@@ -1,11 +1,12 @@
 import React from 'react';
-import { Router, Route, hashHistory } from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import RegistryContainer from './modules/registry/RegistryContainer';
 import RegisterUsernameContainer from './modules/registerUsername/RegisterUsernameContainer';
+import TransferUsernameContainer from './modules/transferUsername/TransferUsernameContainer';
 
 class App extends React.Component {
   render() {
@@ -18,15 +19,22 @@ class App extends React.Component {
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
-          <Router history={hashHistory}>
-            <Route path="/" component={RegistryContainer}/>
-            <Route path="/register" component={RegisterUsernameContainer}/>
-          </Router>
+          <div>
+            <div>
+              <RegisterUsernameContainer/>
+            </div>
+            <div>
+              <TransferUsernameContainer/>
+            </div>
+            <RegistryContainer/>
+          </div>
         </MuiThemeProvider>
       </div>
     );
   }
 
 }
+
+injectTapEventPlugin();
 
 export default App;

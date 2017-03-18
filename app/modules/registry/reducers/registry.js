@@ -5,7 +5,7 @@ import {
 
 const registry = (state = {
   pending: false,
-  items: []
+  entries: []
 }, action) => {
   switch (action.type) {
   case REQUEST_REGISTRY:
@@ -17,7 +17,7 @@ const registry = (state = {
     return {
       ...state,
       pending: false,
-      items: action.registry,
+      entries: action.entries,
       lastUpdated: action.receivedAt
     };
   default:
