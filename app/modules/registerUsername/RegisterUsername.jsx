@@ -3,7 +3,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-const RegisterUsername = ({ openDialog, username, gist, handleSubmit, handleClose, handleUsernameChange, handleGistChange }) => {
+const RegisterUsername = ({ openDialog, account, targetUsername, gist, handleSubmit, handleClose, handleUsernameChange, handleGistChange }) => {
   const actions = [
     <RaisedButton
       label="Submit"
@@ -26,8 +26,16 @@ const RegisterUsername = ({ openDialog, username, gist, handleSubmit, handleClos
       <form>
         <div>
           <TextField
+            disabled={true}
+            fullWidth={true}
+            defaultValue={account}
+            floatingLabelText="Account"
+          />
+        </div>
+        <div>
+          <TextField
             hintText="Github Username"
-            value={username}
+            value={targetUsername}
             onChange={handleUsernameChange}
           />
         </div>

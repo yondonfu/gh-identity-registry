@@ -4,11 +4,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {
   transfer,
   changeNewOwner,
-  openDialog,
-  closeDialog
+  openTransferDialog,
+  closeTransferDialog
 } from './actions/transferUsername';
 
 import TransferUsername from './TransferUsername';
+import NoUsername from './NoUsername';
 
 class TransferUsernameContainer extends React.Component {
   constructor(props) {
@@ -21,16 +22,17 @@ class TransferUsernameContainer extends React.Component {
   }
 
   handleOpen() {
-    this.props.dispatch(openDialog());
+    this.props.dispatch(openTransferDialog());
   }
 
   handleClose() {
-    this.props.dispatch(closeDialog());
+    this.props.dispatch(closeTransferDialog());
   }
 
   handleSubmit() {
-    const { newOwner } = this.props;
-    this.props.dispatch(transfer(newOwner));
+    const { dispatch, account, newOwner } = this.props;
+    dispatch(transfer(account, newOwner));
+    dispatch(closeTransferDialog());
   }
 
   handleNewOwnerChange(e) {
@@ -38,18 +40,32 @@ class TransferUsernameContainer extends React.Component {
   }
 
   render() {
-    const { openDialog, pending, newOwner } = this.props;
+    const { openDialog, pending, newOwner, username, account } = this.props;
+
+    let dialog = null;
+
+    if (username.length == 0) {
+      dialog = <NoUsername
+                 openDialog={openDialog}
+                 account={account}
+                 handleClose={this.handleClose}
+               />;
+    } else {
+      dialog = <TransferUsername
+                 openDialog={openDialog}
+                 account={account}
+                 username={username}
+                 newOwner={newOwner}
+                 handleSubmit={this.handleSubmit}
+                 handleClose={this.handleClose}
+                 handleNewOwnerChange={this.handleNewOwnerChange}
+               />;
+    }
 
     return (
       <div>
         <RaisedButton label="Transfer" onTouchTap={this.handleOpen}/>
-        <TransferUsername
-          openDialog={openDialog}
-          newOwner={newOwner}
-          handleSubmit={this.handleSubmit}
-          handleClose={this.handleClose}
-          handleNewOwnerChange={this.handleNewOwnerChange}
-        />
+        {dialog}
       </div>
     );
   }

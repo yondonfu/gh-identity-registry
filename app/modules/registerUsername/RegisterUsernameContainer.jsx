@@ -5,11 +5,12 @@ import {
   verifyUsername,
   changeUsername,
   changeGist,
-  openDialog,
-  closeDialog
+  openRegisterDialog,
+  closeRegisterDialog
 } from './actions/registerUsername';
 
 import RegisterUsername from './RegisterUsername';
+import RegisteredUsername from './RegisteredUsername';
 
 class RegisterUsernameContainer extends React.Component {
   constructor(props) {
@@ -23,16 +24,17 @@ class RegisterUsernameContainer extends React.Component {
   }
 
   handleOpen() {
-    this.props.dispatch(openDialog());
+    this.props.dispatch(openRegisterDialog());
   }
 
   handleClose() {
-    this.props.dispatch(closeDialog());
+    this.props.dispatch(closeRegisterDialog());
   }
 
   handleSubmit() {
-    const { username, gist } = this.props;
-    this.props.dispatch(verifyUsername(username, gist));
+    const { dispatch, targetUsername, gist, account } = this.props;
+    dispatch(verifyUsername(account, targetUsername, gist));
+    dispatch(closeRegisterDialog());
   }
 
   handleUsernameChange(e) {
@@ -44,19 +46,33 @@ class RegisterUsernameContainer extends React.Component {
   }
 
   render() {
-    const { openDialog, pending, username, gist } = this.props;
+    const { openDialog, pending, targetUsername, gist, account, username } = this.props;
+
+    let dialog = null;
+
+    if (username.length > 0) {
+      dialog = <RegisteredUsername
+                 openDialog={openDialog}
+                 account={account}
+                 username={username}
+                 handleClose={this.handleClose}
+               />;
+    } else {
+      dialog = <RegisterUsername
+                 openDialog={openDialog}
+                 account={account}
+                 targetUsername={targetUsername}
+                 handleSubmit={this.handleSubmit}
+                 handleClose={this.handleClose}
+                 handleUsernameChange={this.handleUsernameChange}
+                 handleGistChange={this.handleGistChange}
+               />;
+    }
 
     return (
       <div>
         <RaisedButton label="Register" onTouchTap={this.handleOpen}/>
-        <RegisterUsername
-          openDialog={openDialog}
-          username={username}
-          handleSubmit={this.handleSubmit}
-          handleClose={this.handleClose}
-          handleUsernameChange={this.handleUsernameChange}
-          handleGistChange={this.handleGistChange}
-        />
+        {dialog}
       </div>
     );
   }
@@ -68,14 +84,14 @@ const mapStateToProps = state => {
   const {
     openDialog,
     pending,
-    username,
+    targetUsername,
     gist
   } = registerUsername;
 
   return {
     openDialog,
     pending,
-    username,
+    targetUsername,
     gist
   };
 };

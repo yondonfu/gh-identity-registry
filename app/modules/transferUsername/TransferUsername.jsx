@@ -3,7 +3,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-const TransferUsername = ({ openDialog, newOwner, handleSubmit, handleClose, handleNewOwnerChange }) => {
+const TransferUsername = ({ openDialog, account, username, newOwner, handleSubmit, handleClose, handleNewOwnerChange }) => {
   const actions = [
     <RaisedButton
       label="Submit"
@@ -25,11 +25,30 @@ const TransferUsername = ({ openDialog, newOwner, handleSubmit, handleClose, han
     >
       <form>
         <div>
-          <TextField
-            hintText="New Owner"
-            value={newOwner}
-            onChange={handleNewOwnerChange}
-          />
+          <div>
+            <TextField
+              disabled={true}
+              fullWidth={true}
+              defaultValue={account}
+              floatingLabelText="Account"
+            />
+          </div>
+          <div>
+            <TextField
+              disabled={true}
+              fullWidth={true}
+              defaultValue={username}
+              floatingLabelText="Username"
+            />
+          </div>
+          <div>
+            <TextField
+              fullWidth={true}
+              hintText="New Owner"
+              value={newOwner}
+              onChange={handleNewOwnerChange}
+            />
+          </div>
         </div>
       </form>
     </Dialog>

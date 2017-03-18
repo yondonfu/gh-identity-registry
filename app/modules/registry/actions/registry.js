@@ -10,7 +10,7 @@ export const requestRegistry = () => ({
 
 export const receiveRegistry = registryData => ({
   type: RECEIVE_REGISTRY,
-  entries: registryData.map(entry => parseRegistryEntry(entry)),
+  entries: registryData.map(entry => parseRegistryEntry(entry)).filter(entry => entry.username.length > 0),
   receivedAt: Date.now()
 });
 
@@ -23,7 +23,6 @@ export const fetchRegistry = () => dispatch => {
     });
 
     Promise.all(entries).then(entries => {
-      console.log(entries);
       dispatch(receiveRegistry(entries));
     });
   });

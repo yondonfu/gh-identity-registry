@@ -5,12 +5,13 @@ export const REGISTER_USERNAME_SUCCESS = 'REGISTER_USERNAME_SUCCESS';
 export const REGISTER_USERNAME_FAILURE = 'REGISTER_USERNAME_FAILURE';
 export const CHANGE_USERNAME = 'CHANGE_USERNAME';
 export const CHANGE_GIST = 'CHANGE_GIST';
-export const OPEN_DIALOG = 'OPEN_DIALOG';
-export const CLOSE_DIALOG = 'CLOSE_DIALOG';
+export const OPEN_REGISTER_DIALOG = 'OPEN_REGISTER_DIALOG';
+export const CLOSE_REGISTER_DIALOG = 'CLOSE_REGISTER_DIALOG';
 
-export const registerUsername = (username, ethAddress) => ({
-  type: REGISTER_USERNAME,
-  username
+const REGISTER_GAS = 500000;
+
+export const registerUsername = () => ({
+  type: REGISTER_USERNAME
 });
 
 export const registerUsernameSuccess = () => ({
@@ -21,34 +22,22 @@ export const registerUsernameFailure = () => ({
   type: REGISTER_USERNAME_FAILURE
 });
 
-export const verifyUsername = (username, gistPath) => dispatch => {
+export const verifyUsername = (account, username, gistPath) => dispatch => {
   dispatch(registerUsername);
 
-  web3.eth.getAccounts((err, accounts) => {
-    if (err != null || accounts.length == 0) {
-      alert('There was an error fetching your account. Make sure your Ethereum client is configured properly');
+  let e = ghRegistry.VerifyUsernameComplete({});
+
+  e.watch((err, res) => {
+
+    if (res.args.success) {
+      dispatch(registerUsernameSuccess);
+    } else {
       dispatch(registerUsernameFailure);
     }
+  });
 
-    let account = accounts[0];
-
-    console.log(account);
-
-    let e = ghRegistry.VerifyUsernameComplete({});
-
-    e.watch((err, res) => {
-      e.stopWatching();
-
-      if (res.args.success) {
-        dispatch(registerUsernameSuccess);
-      } else {
-        dispatch(registerUsernameFailure);
-      }
-    });
-
-    ghRegistry.verifyUsername(username, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: 250000}).then(txId => {
-      console.log(txId);
-    });
+  ghRegistry.verifyUsername(username, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
+    console.log(txId);
   });
 };
 
@@ -62,12 +51,12 @@ export const changeGist = (gist) => ({
   gist
 });
 
-export const openDialog = () => ({
-  type: OPEN_DIALOG,
+export const openRegisterDialog = () => ({
+  type: OPEN_REGISTER_DIALOG,
   openDialog: true
 });
 
-export const closeDialog = () => ({
-  type: CLOSE_DIALOG,
+export const closeRegisterDialog = () => ({
+  type: CLOSE_REGISTER_DIALOG,
   openDialog: false
 });

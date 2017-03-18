@@ -4,11 +4,14 @@ export const TRANSFER_USERNAME = 'TRANSFER_USERNAME';
 export const TRANSFER_USERNAME_SUCCESS = 'TRANSFER_USERNAME_SUCCESS';
 export const TRANSFER_USERNAME_FAILURE = 'TRANSFER_USERNAME_FAILURE';
 export const CHANGE_NEW_OWNER = 'TRANSFER_NEW_OWNER';
-export const OPEN_DIALOG = 'OPEN_DIALOG';
-export const CLOSE_DIALOG = 'CLOSE_DIALOG';
+export const OPEN_TRANSFER_DIALOG = 'OPEN_TRANSFER_DIALOG';
+export const CLOSE_TRANSFER_DIALOG = 'CLOSE_TRANSFER_DIALOG';
 
-export const transferUsername = () => ({
-  type: TRANSFER_USERNAME
+const TRANSFER_GAS = 500000;
+
+export const transferUsername = newOwner => ({
+  type: TRANSFER_USERNAME,
+  newOwner
 });
 
 export const transferUsernameSuccess = () => ({
@@ -19,20 +22,19 @@ export const transferUsernameFailure = () => ({
   type: TRANSFER_USERNAME_FAILURE
 });
 
-export const transfer = newOwner => dispatch => {
-  dispatch(transferUsername);
+export const transfer = (account, newOwner) => dispatch => {
+  dispatch(transferUsername(newOwner));
 
-  web3.eth.getAccounts((err, accounts) => {
-    if (err != null || accounts.length == 0) {
-      alert('There was an error fetching your account. Make sure your Ethereum client is configured properly');
-      dispatch(transferUsernameFailure);
-    }
+  ghRegistry.transfer(newOwner, {from: account, gas: TRANSFER_GAS}).then(txId => {
+    console.log(txId);
 
-    let account = accounts[0];
-
-    console.log(account);
-
-    ghRegistry.transfer(newOwner, {from: account});
+    web3.eth.getTransactionReceipt(txId, (err, receipt) => {
+      if (receipt['gasUsed'] == TRANSFER_GAS) {
+        dispatch(transferUsernameFailure);
+      } else {
+        dispatch(transferUsernameSuccess);
+      }
+    });
   });
 };
 
@@ -41,12 +43,12 @@ export const changeNewOwner = (newOwner) => ({
   newOwner
 });
 
-export const openDialog = () => ({
-  type: OPEN_DIALOG,
+export const openTransferDialog = () => ({
+  type: OPEN_TRANSFER_DIALOG,
   openDialog: true
 });
 
-export const closeDialog = () => ({
-  type: CLOSE_DIALOG,
+export const closeTransferDialog = () => ({
+  type: CLOSE_TRANSFER_DIALOG,
   openDialog: false
 });

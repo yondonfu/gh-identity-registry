@@ -18,6 +18,19 @@ if (typeof web3 !== 'undefined') {
 
 GHRegistry.setProvider(web3Provided.currentProvider);
 
+// Promisify web3.eth.getAccounts
+web3Provided.eth.getAccountsPromise = function() {
+  return new Promise((resolve, reject) => {
+    web3Provided.eth.getAccounts((err, accounts) => {
+      if (err != null) {
+        reject(err);
+      } else {
+        resolve(accounts);
+      }
+    });
+  });
+};
+
 let ex = {
   ghRegistry: GHRegistry.deployed(),
   web3: web3Provided

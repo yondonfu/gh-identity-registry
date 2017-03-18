@@ -4,47 +4,52 @@ import {
   REGISTER_USERNAME_FAILURE,
   CHANGE_USERNAME,
   CHANGE_GIST,
-  OPEN_DIALOG,
-  CLOSE_DIALOG
+  OPEN_REGISTER_DIALOG,
+  CLOSE_REGISTER_DIALOG
 } from '../actions/registerUsername';
 
 const registerUsername = (state = {
   pending: false,
-  username: '',
+  targetUsername: '',
+  gist: '',
   openDialog: false
 }, action) => {
   switch (action.type) {
   case REGISTER_USERNAME:
     return {
-      pending: true,
-      username: action.username
+      ...state,
+      pending: true
     };
   case REGISTER_USERNAME_SUCCESS:
     return {
+      ...state,
       pending: false,
-      username: ''
+      targetUsername: '',
+      gist: ''
     };
   case REGISTER_USERNAME_FAILURE:
     return {
+      ...state,
       pending: false,
-      username: ''
+      targetUsername: '',
+      gist: ''
     };
   case CHANGE_USERNAME:
     return {
       ...state,
-      username: action.username
+      targetUsername: action.username
     };
   case CHANGE_GIST:
     return {
       ...state,
       gist: action.gist
     };
-  case OPEN_DIALOG:
+  case OPEN_REGISTER_DIALOG:
     return {
       ...state,
       openDialog: action.openDialog
     };
-  case CLOSE_DIALOG:
+  case CLOSE_REGISTER_DIALOG:
     return {
       ...state,
       openDialog: action.openDialog
