@@ -1,7 +1,10 @@
 import React from 'react';
+import Table from 'react-bootstrap/lib/Table';
+
+import {} from './stylesheets/registry.scss';
 
 const Registry = ({ entries }) => (
-  <table>
+  <Table striped bordered className="registry-table">
     <thead>
       <tr>
         <th>ETH Address</th>
@@ -18,7 +21,7 @@ const Registry = ({ entries }) => (
         ))
       }
     </tbody>
-  </table>
+  </Table>
 );
 
 export default Registry;

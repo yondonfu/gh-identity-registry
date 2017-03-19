@@ -12,6 +12,8 @@ import {
 import RegisterUsername from './RegisterUsername';
 import RegisteredUsername from './RegisteredUsername';
 
+import {} from './stylesheets/registerUsername.scss';
+
 class RegisterUsernameContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -70,7 +72,7 @@ class RegisterUsernameContainer extends React.Component {
     }
 
     return (
-      <div>
+      <div className="register-container">
         <RaisedButton label="Register" onTouchTap={this.handleOpen}/>
         {dialog}
       </div>

@@ -4,12 +4,16 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
+import Jumbotron from 'react-bootstrap/lib/Jumbotron';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
 import { fetchAccountAndUsername } from './actions/app';
 
 import RegistryContainer from '../registry/RegistryContainer';
 import RegisterUsernameContainer from '../registerUsername/RegisterUsernameContainer';
 import TransferUsernameContainer from '../transferUsername/TransferUsernameContainer';
+
+import {} from './stylesheets/app.scss';
 
 class App extends React.Component {
   componentDidMount() {
@@ -29,8 +33,16 @@ class App extends React.Component {
         </MuiThemeProvider>
         <MuiThemeProvider>
           <div>
-            <RegisterUsernameContainer account={account} username={username}/>
-            <TransferUsernameContainer account={account} username={username}/>
+            <Jumbotron className="app-jumbotron">
+              <h1>Github Identity Registry</h1>
+              <p>
+                Register your Github username with an Ethereum address
+              </p>
+              <div className="app-button-container">
+                <RegisterUsernameContainer account={account} username={username}/>
+                <TransferUsernameContainer account={account} username={username}/>
+              </div>
+            </Jumbotron>
             <RegistryContainer/>
           </div>
         </MuiThemeProvider>

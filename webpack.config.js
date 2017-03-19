@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const APP_DIR = path.resolve(__dirname, 'app');
 const BUILD_DIR = path.resolve(__dirname, 'dist');
@@ -28,9 +29,20 @@ const config = {
         test: /\.sol$/,
         include: CONTRACTS_DIR,
         loader: 'truffle-solidity-loader'
+      },
+      {
+        test: /\.scss$/,
+        include: APP_DIR,
+        loader: ExtractTextPlugin.extract('css-loader!sass-loader')
       }
     ]
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename: 'css/style.css',
+      allChunks: true
+    })
+  ]
 };
 
 module.exports = config;

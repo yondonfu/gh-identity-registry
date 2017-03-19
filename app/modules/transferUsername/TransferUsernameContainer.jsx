@@ -13,6 +13,8 @@ import { fetchRegistry } from '../registry/actions/registry';
 import TransferUsername from './TransferUsername';
 import NoUsername from './NoUsername';
 
+import {} from './stylesheets/transferUsername.scss';
+
 class TransferUsernameContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -65,7 +67,7 @@ class TransferUsernameContainer extends React.Component {
     }
 
     return (
-      <div>
+      <div className="transfer-container">
         <RaisedButton label="Transfer" onTouchTap={this.handleOpen}/>
         {dialog}
       </div>
