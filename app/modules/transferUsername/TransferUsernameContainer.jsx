@@ -8,6 +8,8 @@ import {
   closeTransferDialog
 } from './actions/transferUsername';
 
+import { fetchRegistry } from '../registry/actions/registry';
+
 import TransferUsername from './TransferUsername';
 import NoUsername from './NoUsername';
 

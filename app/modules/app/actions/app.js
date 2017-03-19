@@ -2,7 +2,7 @@ import { ghRegistry, web3 } from '../../../services/ghRegistry';
 
 export const GET_ACCOUNT = 'GET_ACCOUNT';
 export const GET_ACCOUNT_SUCCESS = 'GET_ACCOUNT_SUCCESS';
-export const GET_ACCOUNT_FAILURE = 'GET_ACCOUNT_FAILED';
+export const GET_ACCOUNT_FAILURE = 'GET_ACCOUNT_FAILURE';
 export const REQUEST_USERNAME = 'REQUEST_USERNAME';
 export const RECEIVE_USERNAME = 'RECEIVE_USERNAME';
 

@@ -9,9 +9,7 @@ import {
 
 const transferUsername = (state = {
   pending: false,
-  account: '',
   newOwner: '',
-  username: '',
   openDialog: false
 }, action) => {
   switch (action.type) {

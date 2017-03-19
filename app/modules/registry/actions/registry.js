@@ -17,12 +17,12 @@ export const receiveRegistry = registryData => ({
 export const fetchRegistry = () => dispatch => {
   dispatch(requestRegistry);
 
-  ghRegistry.getRegistrySize.call().then(size => {
+  return ghRegistry.getRegistrySize.call().then(size => {
     let entries = [...Array(size.toNumber()).keys()].map(i => {
       return ghRegistry.getRegistryEntry.call(i).then(entry => entry);
     });
 
-    Promise.all(entries).then(entries => {
+    return Promise.all(entries).then(entries => {
       dispatch(receiveRegistry(entries));
     });
   });

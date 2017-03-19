@@ -1,4 +1,6 @@
 import { ghRegistry, web3 } from '../../../services/ghRegistry';
+import { fetchAccountAndUsername } from '../../app/actions/app';
+import { fetchRegistry } from '../../registry/actions/registry';
 
 export const REGISTER_USERNAME = 'REGISTER_USERNAME';
 export const REGISTER_USERNAME_SUCCESS = 'REGISTER_USERNAME_SUCCESS';
@@ -22,28 +24,29 @@ export const registerUsernameFailure = () => ({
   type: REGISTER_USERNAME_FAILURE
 });
 
-export const verifyUsername = (account, username, gistPath) => dispatch => {
-  dispatch(registerUsername);
+export const verifyUsername = (account, targetUsername, gistPath) => dispatch => {
+  dispatch(registerUsername());
 
   let e = ghRegistry.VerifyUsernameComplete({});
 
   e.watch((err, res) => {
-
     if (res.args.success) {
-      dispatch(registerUsernameSuccess);
+      dispatch(registerUsernameSuccess());
+      dispatch(fetchAccountAndUsername());
+      dispatch(fetchRegistry());
     } else {
       dispatch(registerUsernameFailure);
     }
   });
 
-  ghRegistry.verifyUsername(username, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
+  ghRegistry.verifyUsername(targetUsername, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
     console.log(txId);
   });
 };
 
-export const changeUsername = (username) => ({
+export const changeUsername = (targetUsername) => ({
   type: CHANGE_USERNAME,
-  username
+  targetUsername
 });
 
 export const changeGist = (gist) => ({

@@ -31,6 +31,19 @@ web3Provided.eth.getAccountsPromise = function() {
   });
 };
 
+// Function to check transaction gas usage
+web3Provided.eth.checkTransactionReceipt = function(txId, gasProvided) {
+  return new Promise((resolve, reject) => {
+    web3Provided.eth.getTransactionReceipt(txId, (err, receipt) => {
+      if (err != null || receipt['gasUsed'] == gasProvided) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+};
+
 let ex = {
   ghRegistry: GHRegistry.deployed(),
   web3: web3Provided

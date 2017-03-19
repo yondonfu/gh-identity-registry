@@ -37,7 +37,7 @@ const registerUsername = (state = {
   case CHANGE_USERNAME:
     return {
       ...state,
-      targetUsername: action.username
+      targetUsername: action.targetUsername
     };
   case CHANGE_GIST:
     return {
