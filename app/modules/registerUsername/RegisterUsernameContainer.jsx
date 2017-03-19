@@ -35,8 +35,15 @@ class RegisterUsernameContainer extends React.Component {
 
   handleSubmit() {
     const { dispatch, targetUsername, gist, account } = this.props;
-    dispatch(verifyUsername(account, targetUsername, gist));
-    dispatch(closeRegisterDialog());
+
+    const prefix = 'https://gist.githubusercontent.com/' + targetUsername;
+
+    if (!gist.startsWith(prefix)) {
+      console.log('Invalid');
+    } else {
+      dispatch(verifyUsername(account, targetUsername, gist.slice(prefix.length)));
+      dispatch(closeRegisterDialog());
+    }
   }
 
   handleUsernameChange(e) {
@@ -63,6 +70,7 @@ class RegisterUsernameContainer extends React.Component {
       dialog = <RegisterUsername
                  openDialog={openDialog}
                  account={account}
+                 gist={gist}
                  targetUsername={targetUsername}
                  handleSubmit={this.handleSubmit}
                  handleClose={this.handleClose}
@@ -87,14 +95,14 @@ const mapStateToProps = state => {
     openDialog,
     pending,
     targetUsername,
-    gist
+    gist,
   } = registerUsername;
 
   return {
     openDialog,
     pending,
     targetUsername,
-    gist
+    gist,
   };
 };
 
