@@ -10,6 +10,8 @@ import {
   RECEIVE_NETWORK,
   REQUEST_COLLATERAL,
   RECEIVE_COLLATERAL,
+  WITHDRAW_SUCCESS,
+  WITHDRAW_FAILURE,
   TOGGLE_DRAWER
 } from '../actions/app';
 
@@ -47,6 +49,16 @@ const currentAccount = (state = {
     return {
       ...state,
       collateral: action.collateral
+    };
+  case WITHDRAW_SUCCESS:
+    return {
+      ...state,
+      balance: state.balance + state.collateral,
+      collateral: 0
+    };
+  case WITHDRAW_FAILURE:
+    return {
+      ...state
     };
   default:
     return state;

@@ -6,7 +6,7 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 
-import { fetchAccountAndUsername, toggleDrawer, fetchNetwork } from './actions/app';
+import { fetchAccountAndUsername, toggleDrawer, fetchNetwork, withdraw } from './actions/app';
 
 import NetworkDrawer from './NetworkDrawer';
 import RegistryContainer from '../registry/RegistryContainer';
@@ -20,6 +20,7 @@ class App extends React.Component {
     super(props);
 
     this.handleDrawer = this.handleDrawer.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
   }
   componentDidMount() {
     this.props.dispatch(fetchAccountAndUsername());
@@ -28,6 +29,11 @@ class App extends React.Component {
 
   handleDrawer() {
     this.props.dispatch(toggleDrawer());
+  }
+
+  handleWithdraw() {
+    const { dispatch, account } = this.props;
+    dispatch(withdraw(account));
   }
 
   render() {
@@ -39,7 +45,7 @@ class App extends React.Component {
           <AppBar
             showMenuIconButton={false}
             title="Github Identity Registry"
-            iconElementRight={<FlatButton label="Network Status" onTouchTap={this.handleDrawer}/>}
+            iconElementRight={<FlatButton label="Settings" onTouchTap={this.handleDrawer}/>}
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
@@ -50,6 +56,7 @@ class App extends React.Component {
               account={account}
               balance={balance}
               collateral={collateral}
+              handleWithdraw={this.handleWithdraw}
             />
             <Jumbotron className="app-jumbotron">
               <h1>Github Identity Registry</h1>
@@ -67,7 +74,6 @@ class App extends React.Component {
       </div>
     );
   }
-
 }
 
 const mapStateToProps = state => {

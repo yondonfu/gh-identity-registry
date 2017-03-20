@@ -11,6 +11,7 @@ import {
 
 import RegisterUsername from './RegisterUsername';
 import RegisteredUsername from './RegisteredUsername';
+import ProgressModal from '../utils/ProgressModal';
 
 import {} from './stylesheets/registerUsername.scss';
 
@@ -81,6 +82,7 @@ class RegisterUsernameContainer extends React.Component {
 
     return (
       <div className="register-container">
+        <ProgressModal pending={pending}/>
         <RaisedButton label="Register" onTouchTap={this.handleOpen}/>
         {dialog}
       </div>

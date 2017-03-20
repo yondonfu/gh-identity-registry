@@ -10,8 +10,12 @@ export const REQUEST_NETWORK = 'REQUEST_NETWORK';
 export const RECEIVE_NETWORK = 'RECEIVE_NETWORK';
 export const REQUEST_COLLATERAL = 'REQUEST_COLLATERAL';
 export const RECEIVE_COLLATERAL = 'RECEIVE_COLLATERAL';
+export const WITHDRAW_SUCCESS = 'WITHDRAW_SUCCESS';
+export const WITHDRAW_FAILURE = 'WITHDRAW_FAILURE';
 
 export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
+
+const WITHDRAW_GAS = 500000;
 
 export const getAccount = () => ({
   type: GET_ACCOUNT
@@ -31,8 +35,10 @@ export const fetchAccount = () => dispatch => {
   dispatch(getAccount());
 
   return web3.eth.getAccountsPromise().then(accounts => {
-    web3.eth.getBalance(accounts[0], (err, balance) => {
-      dispatch(getAccountSuccess(accounts[0], web3.fromWei(balance, 'ether').toNumber()));
+    const account = accounts[0];
+
+    return web3.eth.getBalancePromise(account).then(balance => {
+      dispatch(getAccountSuccess(account, web3.fromWei(balance, 'ether').toNumber()));
     });
   }, err => {
     dispatch(getAccountFailure());
@@ -110,6 +116,27 @@ export const fetchNetwork = () => dispatch => {
     }
 
     dispatch(receiveNetwork(networkName));
+  });
+};
+
+export const withdrawSuccess = () => ({
+  type: WITHDRAW_SUCCESS
+});
+
+export const withdrawFailure = () => ({
+  type: WITHDRAW_FAILURE
+});
+
+export const withdraw = account => dispatch => {
+  return ghRegistry.withdrawCollateral({from: account}).then(txId => {
+    console.log(txId);
+
+    return web3.eth.checkTransactionReceipt(txId, WITHDRAW_GAS).then(success => {
+      dispatch(withdrawSuccess());
+    }, err => {
+      dispatch(withdrawFailure());
+      throw err;
+    });
   });
 };
 
