@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 
-import { fetchAccountAndUsername } from './actions/app';
+import { fetchAccountAndUsername, toggleDrawer, fetchNetwork } from './actions/app';
 
+import NetworkDrawer from './NetworkDrawer';
 import RegistryContainer from '../registry/RegistryContainer';
 import RegisterUsernameContainer from '../registerUsername/RegisterUsernameContainer';
 import TransferUsernameContainer from '../transferUsername/TransferUsernameContainer';
@@ -16,23 +16,41 @@ import TransferUsernameContainer from '../transferUsername/TransferUsernameConta
 import {} from './stylesheets/app.scss';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleDrawer = this.handleDrawer.bind(this);
+  }
   componentDidMount() {
     this.props.dispatch(fetchAccountAndUsername());
+    this.props.dispatch(fetchNetwork());
+  }
+
+  handleDrawer() {
+    this.props.dispatch(toggleDrawer());
   }
 
   render() {
-    const { account, username } = this.props;
+    const { account, balance, collateral, username, openDrawer, networkName } = this.props;
 
     return (
       <div>
         <MuiThemeProvider>
           <AppBar
+            showMenuIconButton={false}
             title="Github Identity Registry"
-            iconClassNameRight="muidocs-icon-navigation-expand-more"
+            iconElementRight={<FlatButton label="Network Status" onTouchTap={this.handleDrawer}/>}
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
           <div>
+            <NetworkDrawer
+              open={openDrawer}
+              networkName={networkName}
+              account={account}
+              balance={balance}
+              collateral={collateral}
+            />
             <Jumbotron className="app-jumbotron">
               <h1>Github Identity Registry</h1>
               <p>
@@ -57,12 +75,15 @@ const mapStateToProps = state => {
 
   const {
     currentAccount,
-    currentUsername
+    currentUsername,
+    drawer
   } = app;
 
   const {
     accountPending,
-    account
+    account,
+    balance,
+    collateral,
   } = currentAccount;
 
   const {
@@ -70,11 +91,20 @@ const mapStateToProps = state => {
     username
   } = currentUsername;
 
+  const {
+    openDrawer,
+    networkName
+  } = drawer;
+
   return {
     accountPending,
     usernamePending,
     account,
-    username
+    balance,
+    collateral,
+    username,
+    openDrawer,
+    networkName
   };
 }
 

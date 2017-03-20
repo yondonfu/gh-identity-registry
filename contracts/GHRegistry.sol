@@ -18,7 +18,7 @@ contract GHRegistry is usingOraclize {
 
   mapping(address => string) public registry;
   mapping(bytes32 => VerifyUsernameCallback) callbacks;
-  mapping(address => uint) collaterals;
+  mapping(address => uint) public collaterals;
 
   string constant gistPrefix = "https://gist.githubusercontent.com/";
 

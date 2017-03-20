@@ -6,11 +6,18 @@ import {
   GET_ACCOUNT_FAILURE,
   REQUEST_USERNAME,
   RECEIVE_USERNAME,
+  REQUEST_NETWORK,
+  RECEIVE_NETWORK,
+  REQUEST_COLLATERAL,
+  RECEIVE_COLLATERAL,
+  TOGGLE_DRAWER
 } from '../actions/app';
 
 const currentAccount = (state = {
   accountPending: false,
-  account: ''
+  account: '',
+  balance: 0,
+  collateral: 0
 }, action) => {
   switch (action.type) {
   case GET_ACCOUNT:
@@ -22,13 +29,24 @@ const currentAccount = (state = {
     return {
       ...state,
       accountPending: false,
-      account: action.account
+      account: action.account,
+      balance: action.balance
     };
   case GET_ACCOUNT_FAILURE:
     return {
       ...state,
       accountPending: false,
-      account: ''
+      account: '',
+      balance: 0
+    };
+  case REQUEST_COLLATERAL:
+    return {
+      ...state
+    };
+  case RECEIVE_COLLATERAL:
+    return {
+      ...state,
+      collateral: action.collateral
     };
   default:
     return state;
@@ -56,9 +74,34 @@ const currentUsername = (state = {
   }
 };
 
+const drawer = (state = {
+  openDrawer: false,
+  networkName: ''
+}, action) => {
+  switch (action.type) {
+  case TOGGLE_DRAWER:
+    return {
+      ...state,
+      openDrawer: !state.openDrawer
+    };
+  case REQUEST_NETWORK:
+    return {
+      ...state
+    };
+  case RECEIVE_NETWORK:
+    return {
+      ...state,
+      networkName: action.networkName
+    };
+  default:
+    return state;
+  }
+};
+
 const app = combineReducers({
   currentAccount,
-  currentUsername
+  currentUsername,
+  drawer
 });
 
 export default app;

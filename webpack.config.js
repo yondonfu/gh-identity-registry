@@ -10,6 +10,7 @@ const config = {
   entry: APP_DIR + '/index.jsx',
   output: {
     path: BUILD_DIR,
+    publicPath: '/dist/',
     filename: 'bundle.js'
   },
   resolve: {

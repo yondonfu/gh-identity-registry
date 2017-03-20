@@ -6,13 +6,21 @@ export const GET_ACCOUNT_FAILURE = 'GET_ACCOUNT_FAILURE';
 export const REQUEST_USERNAME = 'REQUEST_USERNAME';
 export const RECEIVE_USERNAME = 'RECEIVE_USERNAME';
 
+export const REQUEST_NETWORK = 'REQUEST_NETWORK';
+export const RECEIVE_NETWORK = 'RECEIVE_NETWORK';
+export const REQUEST_COLLATERAL = 'REQUEST_COLLATERAL';
+export const RECEIVE_COLLATERAL = 'RECEIVE_COLLATERAL';
+
+export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
+
 export const getAccount = () => ({
   type: GET_ACCOUNT
 });
 
-export const getAccountSuccess = account => ({
+export const getAccountSuccess = (account, balance) => ({
   type: GET_ACCOUNT_SUCCESS,
-  account
+  account,
+  balance
 });
 
 export const getAccountFailure = () => ({
@@ -23,7 +31,9 @@ export const fetchAccount = () => dispatch => {
   dispatch(getAccount());
 
   return web3.eth.getAccountsPromise().then(accounts => {
-    dispatch(getAccountSuccess(accounts[0]));
+    web3.eth.getBalance(accounts[0], (err, balance) => {
+      dispatch(getAccountSuccess(accounts[0], web3.fromWei(balance, 'ether').toNumber()));
+    });
   }, err => {
     dispatch(getAccountFailure());
     throw err;
@@ -47,10 +57,62 @@ export const fetchUsername = account => dispatch => {
   });
 };
 
+export const requestCollateral = () => ({
+  type: REQUEST_COLLATERAL
+});
+
+export const receiveCollateral = collateral => ({
+  type: RECEIVE_COLLATERAL,
+  collateral
+});
+
+export const fetchCollateral = account => dispatch => {
+  dispatch(requestCollateral());
+
+  return ghRegistry.collaterals.call(account).then(collateral => {
+    dispatch(receiveCollateral(web3.fromWei(collateral, 'ether').toNumber()));
+  });
+};
+
 export const fetchAccountAndUsername = () => (dispatch, getState) => {
   return dispatch(fetchAccount()).then(() => {
     const fetchedAccount = getState().app.currentAccount.account;
 
-    return dispatch(fetchUsername(fetchedAccount));
+    return dispatch(fetchCollateral(fetchedAccount)).then(() => {
+      return dispatch(fetchUsername(fetchedAccount));
+    });
   });
 };
+
+export const requestNetwork = () => ({
+  type: REQUEST_NETWORK
+});
+
+export const receiveNetwork = networkName => ({
+  type: RECEIVE_NETWORK,
+  networkName
+});
+
+export const fetchNetwork = () => dispatch => {
+  dispatch(requestNetwork());
+
+  web3.version.getNetwork((err, netId) => {
+    let networkName;
+
+    if (netId == 1) {
+      networkName = 'Ethereum Main Net';
+    } else if (netId == 2) {
+      networkName = 'Morden Test Net';
+    } else if (netId == 3) {
+      networkName = 'Ropsten Test Net';
+    } else {
+      networkName = 'Unknown Network';
+    }
+
+    dispatch(receiveNetwork(networkName));
+  });
+};
+
+export const toggleDrawer = () => ({
+  type: TOGGLE_DRAWER
+});
