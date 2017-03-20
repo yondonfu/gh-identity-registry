@@ -44,6 +44,19 @@ web3Provided.eth.getBalancePromise = function(account) {
   });
 };
 
+// Promisify web3.version.getNetwork
+web3Provided.version.getNetworkPromise = function() {
+  return new Promise((resolve, reject) => {
+    web3Provided.version.getNetwork((err, netId) => {
+      if (err != null) {
+        reject(err);
+      } else {
+        resolve(netId);
+      }
+    });
+  });
+};
+
 // Function to check transaction gas usage
 web3Provided.eth.checkTransactionReceipt = function(txId, gasProvided) {
   return new Promise((resolve, reject) => {

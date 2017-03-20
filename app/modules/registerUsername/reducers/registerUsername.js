@@ -5,14 +5,16 @@ import {
   CHANGE_USERNAME,
   CHANGE_GIST,
   OPEN_REGISTER_DIALOG,
-  CLOSE_REGISTER_DIALOG
+  CLOSE_REGISTER_DIALOG,
+  RESET_REGISTER_USERNAME_ERROR
 } from '../actions/registerUsername';
 
 const registerUsername = (state = {
   pending: false,
   targetUsername: '',
   gist: '',
-  openDialog: false
+  openDialog: false,
+  error: ''
 }, action) => {
   switch (action.type) {
   case REGISTER_USERNAME:
@@ -32,7 +34,8 @@ const registerUsername = (state = {
       ...state,
       pending: false,
       targetUsername: '',
-      gist: ''
+      gist: '',
+      error: action.error
     };
   case CHANGE_USERNAME:
     return {
@@ -53,6 +56,11 @@ const registerUsername = (state = {
     return {
       ...state,
       openDialog: action.openDialog
+    };
+  case RESET_REGISTER_USERNAME_ERROR:
+    return {
+      ...state,
+      error: ''
     };
   default:
     return state;

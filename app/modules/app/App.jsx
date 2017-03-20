@@ -6,9 +6,10 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 
-import { fetchAccountAndUsername, toggleDrawer, fetchNetwork, withdraw } from './actions/app';
+import { fetchCurrentInfo, toggleDrawer, withdraw } from './actions/app';
 
-import NetworkDrawer from './NetworkDrawer';
+import SettingsDrawer from './SettingsDrawer';
+import ProgressModal from '../utils/ProgressModal';
 import RegistryContainer from '../registry/RegistryContainer';
 import RegisterUsernameContainer from '../registerUsername/RegisterUsernameContainer';
 import TransferUsernameContainer from '../transferUsername/TransferUsernameContainer';
@@ -23,8 +24,7 @@ class App extends React.Component {
     this.handleWithdraw = this.handleWithdraw.bind(this);
   }
   componentDidMount() {
-    this.props.dispatch(fetchAccountAndUsername());
-    this.props.dispatch(fetchNetwork());
+    this.props.dispatch(fetchCurrentInfo());
   }
 
   handleDrawer() {
@@ -37,7 +37,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { account, balance, collateral, username, openDrawer, networkName } = this.props;
+    const { pending, account, balance, collateral, username, openDrawer, networkName } = this.props;
 
     return (
       <div>
@@ -50,7 +50,8 @@ class App extends React.Component {
         </MuiThemeProvider>
         <MuiThemeProvider>
           <div>
-            <NetworkDrawer
+            <ProgressModal pending={pending}/>
+            <SettingsDrawer
               open={openDrawer}
               networkName={networkName}
               account={account}
@@ -80,31 +81,17 @@ const mapStateToProps = state => {
   const { app } = state;
 
   const {
-    currentAccount,
-    currentUsername,
-    drawer
-  } = app;
-
-  const {
-    accountPending,
+    pending,
     account,
     balance,
     collateral,
-  } = currentAccount;
-
-  const {
-    usernamePending,
-    username
-  } = currentUsername;
-
-  const {
-    openDrawer,
-    networkName
-  } = drawer;
+    username,
+    networkName,
+    openDrawer
+  } = app;
 
   return {
-    accountPending,
-    usernamePending,
+    pending,
     account,
     balance,
     collateral,

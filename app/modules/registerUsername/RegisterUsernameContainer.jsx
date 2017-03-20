@@ -6,12 +6,14 @@ import {
   changeUsername,
   changeGist,
   openRegisterDialog,
-  closeRegisterDialog
+  closeRegisterDialog,
+  resetRegisterUsernameError
 } from './actions/registerUsername';
 
 import RegisterUsername from './RegisterUsername';
 import RegisteredUsername from './RegisteredUsername';
 import ProgressModal from '../utils/ProgressModal';
+import FailureModal from '../utils/FailureModal';
 
 import {} from './stylesheets/registerUsername.scss';
 
@@ -24,6 +26,7 @@ class RegisterUsernameContainer extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleGistChange = this.handleGistChange.bind(this);
+    this.handleFailureClose = this.handleFailureClose.bind(this);
   }
 
   handleOpen() {
@@ -34,13 +37,17 @@ class RegisterUsernameContainer extends React.Component {
     this.props.dispatch(closeRegisterDialog());
   }
 
+  handleFailureClose() {
+    this.props.dispatch(resetRegisterUsernameError());
+  }
+
   handleSubmit() {
     const { dispatch, targetUsername, gist, account } = this.props;
 
     const prefix = 'https://gist.githubusercontent.com/' + targetUsername;
 
     if (!gist.startsWith(prefix)) {
-      console.log('Invalid');
+      console.log('Invalid gist');
     } else {
       dispatch(verifyUsername(account, targetUsername, gist.slice(prefix.length)));
       dispatch(closeRegisterDialog());
@@ -56,7 +63,7 @@ class RegisterUsernameContainer extends React.Component {
   }
 
   render() {
-    const { openDialog, pending, targetUsername, gist, account, username } = this.props;
+    const { openDialog, pending, error, targetUsername, gist, account, username } = this.props;
 
     let dialog = null;
 
@@ -83,6 +90,7 @@ class RegisterUsernameContainer extends React.Component {
     return (
       <div className="register-container">
         <ProgressModal pending={pending}/>
+        <FailureModal failed={error.length > 0} error={error} handleFailureClose={this.handleFailureClose}/>
         <RaisedButton label="Register" onTouchTap={this.handleOpen}/>
         {dialog}
       </div>
@@ -98,6 +106,7 @@ const mapStateToProps = state => {
     pending,
     targetUsername,
     gist,
+    error
   } = registerUsername;
 
   return {
@@ -105,6 +114,7 @@ const mapStateToProps = state => {
     pending,
     targetUsername,
     gist,
+    error
   };
 };
 

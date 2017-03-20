@@ -1,108 +1,103 @@
 import { ghRegistry, web3 } from '../../../services/ghRegistry';
 
-export const GET_ACCOUNT = 'GET_ACCOUNT';
-export const GET_ACCOUNT_SUCCESS = 'GET_ACCOUNT_SUCCESS';
-export const GET_ACCOUNT_FAILURE = 'GET_ACCOUNT_FAILURE';
-export const REQUEST_USERNAME = 'REQUEST_USERNAME';
-export const RECEIVE_USERNAME = 'RECEIVE_USERNAME';
-
-export const REQUEST_NETWORK = 'REQUEST_NETWORK';
-export const RECEIVE_NETWORK = 'RECEIVE_NETWORK';
-export const REQUEST_COLLATERAL = 'REQUEST_COLLATERAL';
-export const RECEIVE_COLLATERAL = 'RECEIVE_COLLATERAL';
+export const REQUEST_CURRENT_INFO = 'REQUEST_CURRENT_INFO';
+export const RECEIVE_CURRENT_INFO = 'RECEIVE_CURRENT_INFO';
+export const ACCOUNT_SUCCESS = 'GET_ACCOUNT_SUCCESS';
+export const ACCOUNT_FAILURE = 'GET_ACCOUNT_FAILURE';
+export const USERNAME_SUCCESS = 'USERNAME_SUCCESS';
+export const USERNAME_FAILURE = 'USERNAME_FAILURE';
+export const NETWORK_SUCCESS = 'NETWORK_SUCCESS';
+export const NETWORK_FAILURE = 'NETWORK_FAILURE';
+export const COLLATERAL_SUCCESS = 'COLLATERAL_SUCCESS';
+export const COLLATERAL_FAILURE = 'COLLATERAL_FAILURE';
 export const WITHDRAW_SUCCESS = 'WITHDRAW_SUCCESS';
 export const WITHDRAW_FAILURE = 'WITHDRAW_FAILURE';
-
 export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
 
 const WITHDRAW_GAS = 500000;
 
-export const getAccount = () => ({
-  type: GET_ACCOUNT
+export const requestCurrentInfo = () => ({
+  type: REQUEST_CURRENT_INFO
 });
 
-export const getAccountSuccess = (account, balance) => ({
-  type: GET_ACCOUNT_SUCCESS,
+export const receiveCurrentInfo = () => ({
+  type: RECEIVE_CURRENT_INFO
+});
+
+export const accountSuccess = (account, balance) => ({
+  type: ACCOUNT_SUCCESS,
   account,
   balance
 });
 
-export const getAccountFailure = () => ({
-  type: GET_ACCOUNT_FAILURE
+export const accountFailure = () => ({
+  type: ACCOUNT_FAILURE
 });
 
 export const fetchAccount = () => dispatch => {
-  dispatch(getAccount());
-
   return web3.eth.getAccountsPromise().then(accounts => {
     const account = accounts[0];
 
     return web3.eth.getBalancePromise(account).then(balance => {
-      dispatch(getAccountSuccess(account, web3.fromWei(balance, 'ether').toNumber()));
+      const ethBalance = web3.fromWei(balance, 'ether').toNumber();
+
+      dispatch(accountSuccess(account, ethBalance));
     });
   }, err => {
-    dispatch(getAccountFailure());
+    dispatch(accountFailure());
     throw err;
   });
 };
 
-export const requestUsername = () => ({
-  type: REQUEST_USERNAME
-});
-
-export const receiveUsername = username => ({
-  type: RECEIVE_USERNAME,
+export const usernameSuccess = username => ({
+  type: USERNAME_SUCCESS,
   username
 });
 
-export const fetchUsername = account => dispatch => {
-  dispatch(requestUsername());
+export const usernameFailure = () => ({
+  type: USERNAME_FAILURE
+});
 
+export const fetchUsername = account => dispatch => {
   return ghRegistry.registry.call(account).then(username => {
-    dispatch(receiveUsername(username));
+    dispatch(usernameSuccess(username));
+  }, err => {
+    dispatch(usernameFailure());
+    throw err;
   });
 };
 
-export const requestCollateral = () => ({
-  type: REQUEST_COLLATERAL
-});
-
-export const receiveCollateral = collateral => ({
-  type: RECEIVE_COLLATERAL,
+export const collateralSuccess = collateral => ({
+  type: COLLATERAL_SUCCESS,
   collateral
 });
 
-export const fetchCollateral = account => dispatch => {
-  dispatch(requestCollateral());
-
-  return ghRegistry.collaterals.call(account).then(collateral => {
-    dispatch(receiveCollateral(web3.fromWei(collateral, 'ether').toNumber()));
-  });
-};
-
-export const fetchAccountAndUsername = () => (dispatch, getState) => {
-  return dispatch(fetchAccount()).then(() => {
-    const fetchedAccount = getState().app.currentAccount.account;
-
-    return dispatch(fetchCollateral(fetchedAccount)).then(() => {
-      return dispatch(fetchUsername(fetchedAccount));
-    });
-  });
-};
-
-export const requestNetwork = () => ({
-  type: REQUEST_NETWORK
+export const collateralFailure = () => ({
+  type: COLLATERAL_FAILURE
 });
 
-export const receiveNetwork = networkName => ({
-  type: RECEIVE_NETWORK,
+export const fetchCollateral = account => dispatch => {
+  return ghRegistry.collaterals.call(account).then(collateral => {
+    const ethCollateral = web3.fromWei(collateral, 'ether').toNumber();
+
+    dispatch(collateralSuccess(ethCollateral));
+  }, err => {
+    dispatch(collateralFailure());
+    throw err;
+  });
+};
+
+export const networkSuccess = networkName => ({
+  type: NETWORK_SUCCESS,
   networkName
 });
 
-export const fetchNetwork = () => dispatch => {
-  dispatch(requestNetwork());
+export const networkFailure = () => ({
+  type: NETWORK_FAILURE
+});
 
-  web3.version.getNetwork((err, netId) => {
+export const fetchNetwork = () => dispatch => {
+  return web3.version.getNetworkPromise().then(netId => {
     let networkName;
 
     if (netId == 1) {
@@ -115,7 +110,22 @@ export const fetchNetwork = () => dispatch => {
       networkName = 'Unknown Network';
     }
 
-    dispatch(receiveNetwork(networkName));
+    dispatch(networkSuccess(networkName));
+  }, err => {
+    dispatch(networkFailure());
+    throw err;
+  });
+};
+
+export const fetchCurrentInfo = () => (dispatch, getState) => {
+  return dispatch(fetchAccount()).then(() => {
+    const fetchedAccount = getState().app.account;
+
+    return dispatch(fetchCollateral(fetchedAccount)).then(() => {
+      return dispatch(fetchUsername(fetchedAccount)).then(() => {
+        return dispatch(fetchNetwork());
+      });
+    });
   });
 };
 
@@ -129,8 +139,6 @@ export const withdrawFailure = () => ({
 
 export const withdraw = account => dispatch => {
   return ghRegistry.withdrawCollateral({from: account}).then(txId => {
-    console.log(txId);
-
     return web3.eth.checkTransactionReceipt(txId, WITHDRAW_GAS).then(success => {
       dispatch(withdrawSuccess());
     }, err => {

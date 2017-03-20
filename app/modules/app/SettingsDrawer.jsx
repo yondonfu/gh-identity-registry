@@ -4,7 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Panel from 'react-bootstrap/lib/Panel';
 
-const NetworkDrawer = ({ open, networkName, account, balance, collateral, handleWithdraw }) => (
+const SettingsDrawer = ({ open, networkName, account, balance, collateral, handleWithdraw }) => (
   <Drawer width={400} open={open}>
     <AppBar
       showMenuIconButton={false}
@@ -31,4 +31,4 @@ const NetworkDrawer = ({ open, networkName, account, balance, collateral, handle
   </Drawer>
 );
 
-export default NetworkDrawer;
+export default SettingsDrawer;

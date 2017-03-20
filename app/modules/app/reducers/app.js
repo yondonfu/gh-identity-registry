@@ -1,54 +1,53 @@
-import { combineReducers } from 'redux';
-
 import {
-  GET_ACCOUNT,
-  GET_ACCOUNT_SUCCESS,
-  GET_ACCOUNT_FAILURE,
-  REQUEST_USERNAME,
-  RECEIVE_USERNAME,
-  REQUEST_NETWORK,
-  RECEIVE_NETWORK,
-  REQUEST_COLLATERAL,
-  RECEIVE_COLLATERAL,
+  REQUEST_CURRENT_INFO,
+  RECEIVE_CURRENT_INFO,
+  ACCOUNT_SUCCESS,
+  ACCOUNT_FAILURE,
+  USERNAME_SUCCESS,
+  USERNAME_FAILURE,
+  NETWORK_SUCCESS,
+  NETWORK_FAILURE,
+  COLLATERAL_SUCCESS,
+  COLLATERAL_FAILURE,
   WITHDRAW_SUCCESS,
   WITHDRAW_FAILURE,
   TOGGLE_DRAWER
 } from '../actions/app';
 
-const currentAccount = (state = {
-  accountPending: false,
+const app = (state = {
+  pending: false,
   account: '',
   balance: 0,
-  collateral: 0
+  collateral: 0,
+  username: '',
+  openDrawer: false
 }, action) => {
   switch (action.type) {
-  case GET_ACCOUNT:
+  case REQUEST_CURRENT_INFO:
     return {
       ...state,
-      accountPending: true
+      pending: true
     };
-  case GET_ACCOUNT_SUCCESS:
+  case ACCOUNT_SUCCESS:
     return {
       ...state,
-      accountPending: false,
       account: action.account,
       balance: action.balance
     };
-  case GET_ACCOUNT_FAILURE:
+  case ACCOUNT_FAILURE:
     return {
       ...state,
-      accountPending: false,
       account: '',
       balance: 0
     };
-  case REQUEST_COLLATERAL:
-    return {
-      ...state
-    };
-  case RECEIVE_COLLATERAL:
+  case COLLATERAL_SUCCESS:
     return {
       ...state,
       collateral: action.collateral
+    };
+  case COLLATERAL_FAILURE:
+    return {
+      ...state
     };
   case WITHDRAW_SUCCESS:
     return {
@@ -60,60 +59,37 @@ const currentAccount = (state = {
     return {
       ...state
     };
-  default:
-    return state;
-  }
-};
-
-const currentUsername = (state = {
-  usernamePending: false,
-  username: ''
-}, action) => {
-  switch (action.type) {
-  case REQUEST_USERNAME:
+  case USERNAME_SUCCESS:
     return {
       ...state,
-      usernamePending: true
-    };
-  case RECEIVE_USERNAME:
-    return {
-      ...state,
-      usernamePending: false,
       username: action.username
     };
-  default:
-    return state;
-  }
-};
-
-const drawer = (state = {
-  openDrawer: false,
-  networkName: ''
-}, action) => {
-  switch (action.type) {
+  case USERNAME_FAILURE:
+    return {
+      ...state
+    };
+  case NETWORK_SUCCESS:
+    return {
+      ...state,
+      networkName: action.networkName
+    };
+  case NETWORK_FAILURE:
+    return {
+      ...state
+    };
+  case RECEIVE_CURRENT_INFO:
+    return {
+      ...state,
+      pending: false
+    };
   case TOGGLE_DRAWER:
     return {
       ...state,
       openDrawer: !state.openDrawer
     };
-  case REQUEST_NETWORK:
-    return {
-      ...state
-    };
-  case RECEIVE_NETWORK:
-    return {
-      ...state,
-      networkName: action.networkName
-    };
   default:
     return state;
   }
 };
-
-const app = combineReducers({
-  currentAccount,
-  currentUsername,
-  drawer
-});
 
 export default app;

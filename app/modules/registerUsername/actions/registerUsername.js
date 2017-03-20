@@ -1,5 +1,5 @@
 import { ghRegistry, web3 } from '../../../services/ghRegistry';
-import { fetchAccountAndUsername } from '../../app/actions/app';
+import { fetchCurrentInfo } from '../../app/actions/app';
 import { fetchRegistry } from '../../registry/actions/registry';
 
 export const REGISTER_USERNAME = 'REGISTER_USERNAME';
@@ -9,6 +9,7 @@ export const CHANGE_USERNAME = 'CHANGE_USERNAME';
 export const CHANGE_GIST = 'CHANGE_GIST';
 export const OPEN_REGISTER_DIALOG = 'OPEN_REGISTER_DIALOG';
 export const CLOSE_REGISTER_DIALOG = 'CLOSE_REGISTER_DIALOG';
+export const RESET_REGISTER_USERNAME_ERROR = 'RESET_REGISTER_USERNAME_ERROR';
 
 const REGISTER_GAS = 500000;
 
@@ -21,7 +22,8 @@ export const registerUsernameSuccess = () => ({
 });
 
 export const registerUsernameFailure = () => ({
-  type: REGISTER_USERNAME_FAILURE
+  type: REGISTER_USERNAME_FAILURE,
+  error: 'Username registration failed'
 });
 
 export const verifyUsername = (account, targetUsername, gistPath) => dispatch => {
@@ -32,17 +34,28 @@ export const verifyUsername = (account, targetUsername, gistPath) => dispatch =>
   e.watch((err, res) => {
     if (res.args.success) {
       dispatch(registerUsernameSuccess());
-      dispatch(fetchAccountAndUsername());
+      dispatch(fetchCurrentInfo());
       dispatch(fetchRegistry());
     } else {
-      dispatch(registerUsernameFailure);
+      dispatch(registerUsernameFailure());
+      dispatch(fetchCurrentInfo());
     }
   });
 
-  ghRegistry.verifyUsername(targetUsername, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
-    console.log(txId);
+  return ghRegistry.verifyUsername(targetUsername, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
+    return web3.eth.checkTransactionReceipt(txId).then(success => {
+      // Do nothing
+    }, err => {
+      dispatch(registerUsernameFailure());
+      dispatch(fetchCurrentInfo());
+      throw err;
+    });
   });
 };
+
+export const resetRegisterUsernameError = () => ({
+  type: RESET_REGISTER_USERNAME_ERROR
+});
 
 export const changeUsername = (targetUsername) => ({
   type: CHANGE_USERNAME,

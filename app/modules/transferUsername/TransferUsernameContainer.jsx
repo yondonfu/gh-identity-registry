@@ -12,6 +12,7 @@ import { fetchRegistry } from '../registry/actions/registry';
 
 import TransferUsername from './TransferUsername';
 import NoUsername from './NoUsername';
+import ProgressModal from '../utils/ProgressModal';
 
 import {} from './stylesheets/transferUsername.scss';
 
@@ -68,6 +69,7 @@ class TransferUsernameContainer extends React.Component {
 
     return (
       <div className="transfer-container">
+        <ProgressModal pending={pending}/>
         <RaisedButton label="Transfer" onTouchTap={this.handleOpen}/>
         {dialog}
       </div>
