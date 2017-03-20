@@ -19,6 +19,7 @@ const RegisterUsername = ({ openDialog, account, targetUsername, gist, handleSub
     <Dialog
       title="Register Username"
       actions={actions}
+      autoDetectWindowHeight={true}
       modal={false}
       open={openDialog}
       onRequestClose={handleClose}
@@ -47,6 +48,11 @@ const RegisterUsername = ({ openDialog, account, targetUsername, gist, handleSub
           />
         </div>
       </form>
+      <div>
+          This operation requires posting collateral of 1 ETH. Part of the collateral is used to pay for the Oraclize fee.
+          If a Github username is successfully verified, you will be able to withdraw your remaining collateral.
+          If a Github username is not successfully verified, your collateral will be lost.
+      </div>
     </Dialog>
   );
 };
