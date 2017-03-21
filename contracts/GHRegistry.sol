@@ -39,7 +39,7 @@ contract GHRegistry is usingOraclize {
   }
 
   function GHRegistry(uint _minCollateral, uint _oraclizeGas) {
-    OAR = OraclizeAddrResolverI(0x6f485c8bf6fc43ea212e93bbf8ce046c7f1cb475);
+    /* OAR = OraclizeAddrResolverI(0x6f485c8bf6fc43ea212e93bbf8ce046c7f1cb475); */
     minCollateral = _minCollateral;
     oraclizeGas = _oraclizeGas;
   }
