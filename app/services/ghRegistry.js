@@ -2,7 +2,7 @@ import contract from 'truffle-contract';
 
 import Web3 from 'web3';
 
-import GHRegistryArtifact from 'contracts/GHRegistry.sol';
+import GHRegistryArtifact from '../../build/contracts/GHRegistry.json';
 const GHRegistry = contract(GHRegistryArtifact);
 
 let defaultWeb3Location = 'http://localhost:8545';
