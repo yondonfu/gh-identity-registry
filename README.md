@@ -51,5 +51,6 @@ Once users have registered a username with their Ethereum address they can trans
 
 # Possible Improvements
 
-- Optimistic UI. Instead of throwing up a progress spinner for long transactions, display a pending transactions section somewhere in the UI.
 - Is there a better form of identity attestation than using a Github gist?
+- Optimistic UI. Instead of throwing up a progress spinner for long transactions, display a pending transactions section somewhere in the UI.
+- General UI improvements. Validation messages during username registration alerting a user that the raw gist url MUST begin with the prefix `https://gist.githubusercontent.com/<username>/`
