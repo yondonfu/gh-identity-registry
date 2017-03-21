@@ -23,6 +23,7 @@ class App extends React.Component {
     this.handleDrawer = this.handleDrawer.bind(this);
     this.handleWithdraw = this.handleWithdraw.bind(this);
   }
+
   componentDidMount() {
     this.props.dispatch(fetchCurrentInfo());
   }
@@ -37,7 +38,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { pending, account, balance, collateral, username, openDrawer, networkName } = this.props;
+    const { pending, account, balance, collateral, username, openDrawer, networkName, withdrawPending } = this.props;
 
     return (
       <div>
@@ -58,6 +59,7 @@ class App extends React.Component {
               balance={balance}
               collateral={collateral}
               handleWithdraw={this.handleWithdraw}
+              withdrawPending={withdrawPending}
             />
             <Jumbotron className="app-jumbotron">
               <h1>Github Identity Registry</h1>
@@ -87,7 +89,8 @@ const mapStateToProps = state => {
     collateral,
     username,
     networkName,
-    openDrawer
+    openDrawer,
+    withdrawPending
   } = app;
 
   return {
@@ -97,7 +100,8 @@ const mapStateToProps = state => {
     collateral,
     username,
     openDrawer,
-    networkName
+    networkName,
+    withdrawPending
   };
 }
 

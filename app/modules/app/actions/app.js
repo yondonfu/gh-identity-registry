@@ -10,6 +10,7 @@ export const NETWORK_SUCCESS = 'NETWORK_SUCCESS';
 export const NETWORK_FAILURE = 'NETWORK_FAILURE';
 export const COLLATERAL_SUCCESS = 'COLLATERAL_SUCCESS';
 export const COLLATERAL_FAILURE = 'COLLATERAL_FAILURE';
+export const WITHDRAW_START = 'WITHDRAW_START';
 export const WITHDRAW_SUCCESS = 'WITHDRAW_SUCCESS';
 export const WITHDRAW_FAILURE = 'WITHDRAW_FAILURE';
 export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
@@ -139,6 +140,10 @@ export const fetchCurrentInfo = () => (dispatch, getState) => {
   });
 };
 
+export const withdrawStart = () => ({
+  type: WITHDRAW_START
+});
+
 export const withdrawSuccess = () => ({
   type: WITHDRAW_SUCCESS
 });
@@ -148,6 +153,8 @@ export const withdrawFailure = () => ({
 });
 
 export const withdraw = account => dispatch => {
+  dispatch(withdrawStart());
+
   return GHRegistry.deployed().then(instance => {
     return instance.withdrawCollateral({from: account, gas: WITHDRAW_GAS}).then(result => {
       if (result.receipt['gasUsed'] == WITHDRAW_GAS) {

@@ -4,7 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Panel from 'react-bootstrap/lib/Panel';
 
-const SettingsDrawer = ({ open, networkName, account, balance, collateral, handleWithdraw }) => (
+const SettingsDrawer = ({ open, networkName, account, balance, collateral, handleWithdraw, withdrawPending }) => (
   <Drawer width={400} open={open}>
     <AppBar
       showMenuIconButton={false}
@@ -24,7 +24,10 @@ const SettingsDrawer = ({ open, networkName, account, balance, collateral, handl
       <Panel header="Current Withdrawable Collateral">
         {collateral}
       </Panel>
-      {collateral > 0 &&
+      {withdrawPending &&
+       <p>Withdrawal In-Progress</p>
+      }
+      {collateral > 0 && !withdrawPending &&
        <RaisedButton label="Withdraw Collateral" onTouchTap={handleWithdraw}/>
       }
     </div>

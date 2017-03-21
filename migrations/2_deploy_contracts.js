@@ -5,12 +5,12 @@ const strings = artifacts.require('strings.sol');
 module.exports = function(deployer, network) {
   let overwrite = false;
 
-  if (network == 'development') {
+  if (network == 'testrpc') {
     overwrite = true;
   }
 
   deployer.deploy(usingOraclize, {overwrite: overwrite});
   deployer.deploy(strings, {overwrite: overwrite});
   deployer.link(strings, GHRegistry);
-  deployer.deploy(GHRegistry, 1000000000000000000, 250000, {overwrite: overwrite});
+  deployer.deploy(GHRegistry, 1000000000000000000, 250000);
 };

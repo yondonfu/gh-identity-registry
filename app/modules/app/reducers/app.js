@@ -9,6 +9,7 @@ import {
   NETWORK_FAILURE,
   COLLATERAL_SUCCESS,
   COLLATERAL_FAILURE,
+  WITHDRAW_START,
   WITHDRAW_SUCCESS,
   WITHDRAW_FAILURE,
   TOGGLE_DRAWER
@@ -20,7 +21,8 @@ const app = (state = {
   balance: 0,
   collateral: 0,
   username: '',
-  openDrawer: false
+  openDrawer: false,
+  withdrawPending: false
 }, action) => {
   switch (action.type) {
   case REQUEST_CURRENT_INFO:
@@ -49,15 +51,22 @@ const app = (state = {
     return {
       ...state
     };
+  case WITHDRAW_START:
+    return {
+      ...state,
+      withdrawPending: true
+    };
   case WITHDRAW_SUCCESS:
     return {
       ...state,
+      withdrawPending: false,
       balance: state.balance + state.collateral,
       collateral: 0
     };
   case WITHDRAW_FAILURE:
     return {
-      ...state
+      ...state,
+      withdrawPending: false
     };
   case USERNAME_SUCCESS:
     return {
