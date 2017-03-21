@@ -1,7 +1,7 @@
 pragma solidity ^0.4.6;
 
-import "usingOraclize.sol";
-import "strings.sol";
+import "../contracts/usingOraclize.sol";
+import "../contracts/strings.sol";
 
 contract GHRegistry is usingOraclize {
   using strings for *;

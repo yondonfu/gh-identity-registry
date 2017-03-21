@@ -1,10 +1,11 @@
+import contract from 'truffle-contract';
+
 import Web3 from 'web3';
 
-import GHRegistry from 'contracts/GHRegistry.sol';
+import GHRegistryArtifact from 'contracts/GHRegistry.sol';
+const GHRegistry = contract(GHRegistryArtifact);
 
-import truffleConfig from '../../truffle.js';
-
-let defaultWeb3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
+let defaultWeb3Location = 'http://localhost:8545';
 
 let web3Provided;
 
@@ -71,7 +72,7 @@ web3Provided.eth.checkTransactionReceipt = function(txId, gasProvided) {
 };
 
 let ex = {
-  ghRegistry: GHRegistry.deployed(),
+  GHRegistry,
   web3: web3Provided
 };
 

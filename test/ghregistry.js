@@ -1,3 +1,5 @@
+const GHRegistry = artifacts.require('GHRegistry.sol');
+
 contract('GHRegistry', function(accounts) {
   it('should match initial contract settings', async function() {
     const minCollateral = web3.toWei(1, 'ether');

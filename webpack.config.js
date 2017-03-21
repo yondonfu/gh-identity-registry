@@ -1,10 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const APP_DIR = path.resolve(__dirname, 'app');
 const BUILD_DIR = path.resolve(__dirname, 'dist');
 const CONTRACTS_DIR = path.resolve(__dirname, 'contracts');
+const MIGRATIONS_DIR = path.resolve(__dirname, 'migrations');
 
 const config = {
   entry: APP_DIR + '/index.jsx',
@@ -29,7 +31,16 @@ const config = {
       {
         test: /\.sol$/,
         include: CONTRACTS_DIR,
-        loader: 'truffle-solidity-loader'
+        use: [
+          { loader: 'json-loader' },
+          {
+            loader: 'truffle-solidity-loader',
+            options: {
+              migrations_directory: MIGRATIONS_DIR,
+              network: 'development'
+            }
+          }
+        ]
       },
       {
         test: /\.scss$/,
@@ -42,7 +53,10 @@ const config = {
     new ExtractTextPlugin({
       filename: 'css/style.css',
       allChunks: true
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: APP_DIR + '/index.html', to: 'index.html' }
+    ])
   ]
 };
 

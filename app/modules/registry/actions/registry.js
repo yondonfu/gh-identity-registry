@@ -1,4 +1,4 @@
-import { ghRegistry } from '../../../services/ghRegistry';
+import { GHRegistry } from '../../../services/ghRegistry';
 import { parseRegistryEntry } from '../utils/helpers';
 
 export const REQUEST_REGISTRY = 'REQUEST_REGISTRY';
@@ -17,13 +17,15 @@ export const receiveRegistry = registryData => ({
 export const fetchRegistry = () => dispatch => {
   dispatch(requestRegistry);
 
-  return ghRegistry.getRegistrySize.call().then(size => {
-    let entries = [...Array(size.toNumber()).keys()].map(i => {
-      return ghRegistry.getRegistryEntry.call(i).then(entry => entry);
-    });
+  return GHRegistry.deployed().then(instance => {
+    return instance.getRegistrySize.call().then(size => {
+      let entries = [...Array(size.toNumber()).keys()].map(i => {
+        return instance.getRegistryEntry.call(i).then(entry => entry);
+      });
 
-    return Promise.all(entries).then(entries => {
-      dispatch(receiveRegistry(entries));
+      return Promise.all(entries).then(entries => {
+        dispatch(receiveRegistry(entries));
+      });
     });
   });
 };

@@ -1,4 +1,4 @@
-import { ghRegistry, web3 } from '../../../services/ghRegistry';
+import { GHRegistry, web3 } from '../../../services/ghRegistry';
 import { fetchCurrentInfo } from '../../app/actions/app';
 import { fetchRegistry } from '../../registry/actions/registry';
 
@@ -29,27 +29,33 @@ export const registerUsernameFailure = () => ({
 export const verifyUsername = (account, targetUsername, gistPath) => dispatch => {
   dispatch(registerUsername());
 
-  let e = ghRegistry.VerifyUsernameComplete({});
+  // TODO: Fix event watching for Truffle v3
 
-  e.watch((err, res) => {
-    if (res.args.success) {
-      dispatch(registerUsernameSuccess());
-      dispatch(fetchCurrentInfo());
-      dispatch(fetchRegistry());
-    } else {
-      dispatch(registerUsernameFailure());
-      dispatch(fetchCurrentInfo());
-    }
+  GHRegistry.deployed().then(instance => {
+    let e = instance.VerifyUsernameComplete({});
+
+    e.watch((err, res) => {
+      if (res.args.success) {
+        dispatch(registerUsernameSuccess());
+        dispatch(fetchCurrentInfo());
+        dispatch(fetchRegistry());
+      } else {
+        dispatch(registerUsernameFailure());
+        dispatch(fetchCurrentInfo());
+      }
+    });
   });
 
-  return ghRegistry.verifyUsername(targetUsername, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(txId => {
-    return web3.eth.checkTransactionReceipt(txId).then(success => {
-      // Do nothing
-    }, err => {
-      dispatch(registerUsernameFailure());
-      dispatch(fetchCurrentInfo());
-      throw err;
+  return GHRegistry.deployed().then(instance => {
+    return instance.verifyUsername(targetUsername, gistPath, {from: account, value: web3.toWei(1, 'ether'), gas: REGISTER_GAS}).then(result => {
+      if (result.receipt['gasUsed'] == REGISTER_GAS) {
+        dispatch(registerUsernameFailure());
+        dispatch(fetchCurrentInfo());
+      }
     });
+  }, err => {
+    dispatch(registerUsernameFailure());
+    throw err;
   });
 };
 

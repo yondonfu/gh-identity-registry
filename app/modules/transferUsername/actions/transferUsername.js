@@ -1,4 +1,4 @@
-import { ghRegistry, web3 } from '../../../services/ghRegistry';
+import { GHRegistry, web3 } from '../../../services/ghRegistry';
 import { fetchRegistry } from '../../registry/actions/registry';
 import { fetchCurrentInfo } from '../../app/actions/app';
 
@@ -26,15 +26,19 @@ export const transferUsernameFailure = () => ({
 export const transfer = (account, newOwner) => dispatch => {
   dispatch(transferUsername());
 
-  return ghRegistry.transfer(newOwner, {from: account, gas: TRANSFER_GAS}).then(txId => {
-    return web3.eth.checkTransactionReceipt(txId, TRANSFER_GAS).then(success => {
-      dispatch(transferUsernameSuccess());
-      dispatch(fetchCurrentInfo());
-      dispatch(fetchRegistry());
-    }, err => {
-      dispatch(transferUsernameFailure());
-      throw err;
+  return GHRegistry.deployed().then(instance => {
+    return instance.transfer(newOwner, {from: account, gas: TRANSFER_GAS}).then(result => {
+      if (result.receipt['gasUsed'] == TRANSFER_GAS) {
+        dispatch(transferUsernameFailure());
+      } else {
+        dispatch(transferUsernameSuccess());
+        dispatch(fetchCurrentInfo());
+        dispatch(fetchRegistry());
+      }
     });
+  }, err => {
+    dispatch(transferUsernameFailure());
+    throw err;
   });
 };
 

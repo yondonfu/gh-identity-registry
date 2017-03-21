@@ -1,4 +1,4 @@
-import { ghRegistry, web3 } from '../../../services/ghRegistry';
+import { GHRegistry, web3 } from '../../../services/ghRegistry';
 
 export const REQUEST_CURRENT_INFO = 'REQUEST_CURRENT_INFO';
 export const RECEIVE_CURRENT_INFO = 'RECEIVE_CURRENT_INFO';
@@ -59,8 +59,13 @@ export const usernameFailure = () => ({
 });
 
 export const fetchUsername = account => dispatch => {
-  return ghRegistry.registry.call(account).then(username => {
-    dispatch(usernameSuccess(username));
+  return GHRegistry.deployed().then(instance => {
+    return instance.registry.call(account).then(username => {
+      dispatch(usernameSuccess(username));
+    }, err => {
+      dispatch(usernameFailure());
+      throw err;
+    });
   }, err => {
     dispatch(usernameFailure());
     throw err;
@@ -77,10 +82,15 @@ export const collateralFailure = () => ({
 });
 
 export const fetchCollateral = account => dispatch => {
-  return ghRegistry.collaterals.call(account).then(collateral => {
-    const ethCollateral = web3.fromWei(collateral, 'ether').toNumber();
+  return GHRegistry.deployed().then(instance => {
+    return instance.collaterals.call(account).then(collateral => {
+      const ethCollateral = web3.fromWei(collateral, 'ether').toNumber();
 
-    dispatch(collateralSuccess(ethCollateral));
+      dispatch(collateralSuccess(ethCollateral));
+    }, err => {
+      dispatch(collateralFailure());
+      throw err;
+    });
   }, err => {
     dispatch(collateralFailure());
     throw err;
@@ -138,13 +148,17 @@ export const withdrawFailure = () => ({
 });
 
 export const withdraw = account => dispatch => {
-  return ghRegistry.withdrawCollateral({from: account}).then(txId => {
-    return web3.eth.checkTransactionReceipt(txId, WITHDRAW_GAS).then(success => {
-      dispatch(withdrawSuccess());
-    }, err => {
-      dispatch(withdrawFailure());
-      throw err;
+  return GHRegistry.deployed().then(instance => {
+    return instance.withdrawCollateral({from: account, gas: WITHDRAW_GAS}).then(result => {
+      if (result.receipt['gasUsed'] == WITHDRAW_GAS) {
+        dispatch(withdrawFailure());
+      } else {
+        dispatch(withdrawSuccess());
+      }
     });
+  }, err => {
+    dispatch(withdrawFailure());
+    throw err;
   });
 };
 
