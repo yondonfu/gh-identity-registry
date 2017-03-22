@@ -39,7 +39,7 @@ contract GHRegistry is usingOraclize {
   }
 
   function GHRegistry(uint _minCollateral, uint _oraclizeGas) {
-    /* OAR = OraclizeAddrResolverI(0x6f485c8bf6fc43ea212e93bbf8ce046c7f1cb475); */
+    OAR = OraclizeAddrResolverI(0x6f485c8bf6fc43ea212e93bbf8ce046c7f1cb475); // Local dev
     minCollateral = _minCollateral;
     oraclizeGas = _oraclizeGas;
   }
@@ -63,7 +63,7 @@ contract GHRegistry is usingOraclize {
   function __callback(bytes32 queryId, string result) onlyOraclize {
     VerifyUsernameCallback memory c = callbacks[queryId];
 
-    if (checkGist(result, c.claimant, c.username)) {
+    if (checkGistAddr(result, c.claimant)) {
       registry[c.claimant] = c.username;
       registryEntries.push(c.claimant);
 
@@ -87,21 +87,11 @@ contract GHRegistry is usingOraclize {
   // UTILS
 
   // Expect gist to be of the following form:
-  // <gh-username>\n<eth-addr>
-  function checkGist(string s, address claimant, string username) returns (bool) {
-    var contents = s.toSlice();
-    var delim = "\n".toSlice();
-    var ghUsername = contents.split(delim);
+  // <eth-addr>
+  function checkGistAddr(string s, address claimant) returns (bool) {
+    var ethAddr = parseAddr(s);
 
-    if (ghUsername.compare(username.toSlice()) != 0) return false;
-
-    var ethAddr = parseAddr(contents.split(delim).toString());
-
-    if (ethAddr != claimant) {
-      return false;
-    } else {
-      return true;
-    }
+    return ethAddr == claimant;
   }
 
   function withdrawCollateral() external {

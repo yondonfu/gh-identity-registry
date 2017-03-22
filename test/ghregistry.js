@@ -17,7 +17,7 @@ contract('GHRegistry', function(accounts) {
     // Verify
 
     const username = 'yondonfu';
-    const gistPath = '/20711bc7b0241425b73c12253fda12e5/raw/87a4e20dff8d5004ad21104584d54d5d42fabd7d/gistfile1.txt';
+    const gistPath = '/20711bc7b0241425b73c12253fda12e5/raw/8cae39ff50c7906ca29911cbf8b02a36d746b466/gistfile1.txt';
 
     await c.verifyUsername(username, gistPath, {from: accounts[0], value: minCollateral});
 
