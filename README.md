@@ -25,6 +25,19 @@ You will need to be running a local Ethereum node by using a client like [Geth](
 
 If you want to use [TestRPC](https://github.com/ethereumjs/testrpc) you will need to use Oraclize's [ethereum-bridge](https://github.com/oraclize/ethereum-bridge) tool.
 
+You can also interact with the on-chain contract with the Truffle console to check for your Github username. Make sure to hava Geth node running on the Ropsten testnet on `localhost:8545`.
+
+```
+cd gh-identity-registry
+truffle console --network ropsten
+
+GHRegistry.deployed().then(function(instance) {
+  instance.registry.call(<eth-address>).then(console.log);
+});
+```
+
+Replace `<eth-address>` with the ETH address you are checking for.
+
 # Protocol
 
 `GHRegistry.sol` is the smart contract that maintains the state of the registry. The contract allows users to:
