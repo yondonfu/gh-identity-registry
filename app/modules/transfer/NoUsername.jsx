@@ -2,10 +2,9 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 
-const RegisteredUsername = ({
-  openDialog,
+const NoUsername = ({
+  open,
   account,
-  username,
   handleClose
 }) => {
   const actions = [
@@ -17,15 +16,15 @@ const RegisteredUsername = ({
 
   return (
     <Dialog
-      title="Registered Username"
+      title="Not Registered"
       actions={actions}
       modal={false}
-      open={openDialog}
+      open={open}
       onRequestClose={handleClose}
     >
-      Your ETH account {account} is already registered with the Github username {username}
+      Your ETH account {account} is not yet registered with a Github username.
     </Dialog>
   );
 };
 
-export default RegisteredUsername;
+export default NoUsername;

@@ -17,8 +17,7 @@ const registry = (state = {
     return {
       ...state,
       pending: false,
-      entries: action.entries,
-      lastUpdated: action.receivedAt
+      entries: action.entries
     };
   default:
     return state;

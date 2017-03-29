@@ -1,34 +1,43 @@
 import {
-  REQUEST_CURRENT_INFO,
-  RECEIVE_CURRENT_INFO,
+  REQUEST_INFO,
+  RECEIVE_INFO,
   ACCOUNT_SUCCESS,
   ACCOUNT_FAILURE,
-  USERNAME_SUCCESS,
-  USERNAME_FAILURE,
   NETWORK_SUCCESS,
   NETWORK_FAILURE,
+  CONTRACT_ADDRESS_SUCCESS,
+  CONTRACT_ADDRESS_FAILURE,
+  USERNAME_SUCCESS,
+  USERNAME_FAILURE,
+  TOGGLE_DRAWER,
   COLLATERAL_SUCCESS,
   COLLATERAL_FAILURE,
-  WITHDRAW_START,
+  INIT_WITHDRAW,
   WITHDRAW_SUCCESS,
-  WITHDRAW_FAILURE,
-  TOGGLE_DRAWER
+  WITHDRAW_FAILURE
 } from '../actions/app';
 
 const app = (state = {
   pending: false,
+  networkName: '',
   account: '',
   balance: 0,
-  collateral: 0,
+  contractAddress: '',
   username: '',
-  openDrawer: false,
-  withdrawPending: false
+  withdrawPending: false,
+  collateral: 0,
+  openDrawer: false
 }, action) => {
   switch (action.type) {
-  case REQUEST_CURRENT_INFO:
+  case REQUEST_INFO:
     return {
       ...state,
       pending: true
+    };
+  case RECEIVE_INFO:
+    return {
+      ...state,
+      pending: false
     };
   case ACCOUNT_SUCCESS:
     return {
@@ -42,31 +51,23 @@ const app = (state = {
       account: '',
       balance: 0
     };
-  case COLLATERAL_SUCCESS:
+  case NETWORK_SUCCESS:
     return {
       ...state,
-      collateral: action.collateral
+      networkName: action.networkName
     };
-  case COLLATERAL_FAILURE:
+  case NETWORK_FAILURE:
     return {
       ...state
     };
-  case WITHDRAW_START:
+  case CONTRACT_ADDRESS_SUCCESS:
     return {
       ...state,
-      withdrawPending: true
+      contractAddress: action.contractAddress
     };
-  case WITHDRAW_SUCCESS:
+  case CONTRACT_ADDRESS_FAILURE:
     return {
-      ...state,
-      withdrawPending: false,
-      balance: state.balance + state.collateral,
-      collateral: 0
-    };
-  case WITHDRAW_FAILURE:
-    return {
-      ...state,
-      withdrawPending: false
+      ...state
     };
   case USERNAME_SUCCESS:
     return {
@@ -77,24 +78,36 @@ const app = (state = {
     return {
       ...state
     };
-  case NETWORK_SUCCESS:
-    return {
-      ...state,
-      networkName: action.networkName
-    };
-  case NETWORK_FAILURE:
-    return {
-      ...state
-    };
-  case RECEIVE_CURRENT_INFO:
-    return {
-      ...state,
-      pending: false
-    };
   case TOGGLE_DRAWER:
     return {
       ...state,
       openDrawer: !state.openDrawer
+    };
+  case COLLATERAL_SUCCESS:
+    return {
+      ...state,
+      collateral: action.collateral
+    };
+  case COLLATERAL_FAILURE:
+    return {
+      ...state
+    };
+  case INIT_WITHDRAW:
+    return {
+      ...state,
+      withdrawPending: true
+    };
+  case WITHDRAW_SUCCESS:
+    return {
+      ...state,
+      balance: state.balance + state.collateral,
+      withdrawPending: false,
+      collateral: 0
+    };
+  case WITHDRAW_FAILURE:
+    return {
+      ...state,
+      withdrawPending: false
     };
   default:
     return state;

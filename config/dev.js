@@ -6,7 +6,9 @@ module.exports = function(env) {
   return webpackMerge(commonConfig(), {
     devtool: 'cheap-module-source-map',
     devServer: {
-      publicPath: '/dist/'
+      publicPath: '/',
+      contentBase: '/dist/',
+      historyApiFallback: true
     }
   });
 };

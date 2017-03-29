@@ -69,8 +69,6 @@ contract GHRegistry is usingOraclize {
 
       VerifyUsernameComplete(true, c.claimant, c.username);
     } else {
-      collaterals[c.claimant] = 0; // Lose collateral
-
       VerifyUsernameComplete(false, c.claimant, c.username);
     }
   }

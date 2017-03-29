@@ -1,6 +1,3 @@
-import { GHRegistry } from '../../../services/ghRegistry';
-import { parseRegistryEntry } from '../utils/helpers';
-
 export const REQUEST_REGISTRY = 'REQUEST_REGISTRY';
 export const RECEIVE_REGISTRY = 'RECEIVE_REGISTRY';
 
@@ -10,11 +7,17 @@ export const requestRegistry = () => ({
 
 export const receiveRegistry = registryData => ({
   type: RECEIVE_REGISTRY,
-  entries: registryData.map(entry => parseRegistryEntry(entry)).filter(entry => entry.username.length > 0),
-  receivedAt: Date.now()
+  entries: registryData.map(entry => parseRegistryEntry(entry)).filter(entry => entry.username.length > 0)
 });
 
-export const fetchRegistry = () => dispatch => {
+const parseRegistryEntry = entry => {
+  return {
+    ethAddress: entry[0],
+    username: entry[1]
+  };
+};
+
+export const fetchRegistry = () => ({ GHRegistry }) => dispatch => {
   dispatch(requestRegistry);
 
   return GHRegistry.deployed().then(instance => {

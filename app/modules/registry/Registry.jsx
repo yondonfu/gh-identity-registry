@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/lib/Table';
 
 import {} from './stylesheets/registry.scss';
 
-const Registry = ({ entries }) => (
+const Registry = ({ pending, entries }) => (
   <Table striped bordered className="registry-table">
     <thead>
       <tr>
