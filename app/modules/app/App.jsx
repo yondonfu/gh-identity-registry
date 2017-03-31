@@ -27,6 +27,7 @@ class App extends React.Component {
         <MuiThemeProvider>
           <Router>
             <div>
+              <WrongNetwork open={networkName !== 'Ropsten Test Net'}/>
               <Header
                 {...this.props}
               />
